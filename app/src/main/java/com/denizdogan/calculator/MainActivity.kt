@@ -53,10 +53,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-
-
-
     private fun pressedNumberButton(number: CharSequence){
 
         mergedNumbers += number.toString()
@@ -68,7 +64,6 @@ class MainActivity : AppCompatActivity() {
 
         if(processHolder.whichOperation == '\u0000'){
             processHolder.item1 = mergedNumbers.toDouble()
-            println("başarılı bir şekilde alındı ${processHolder.item1}")
             bigNumber.text = ""
             mergedNumbers = ""
             processHolder.whichOperation = sign.lowercaseChar()
@@ -76,8 +71,6 @@ class MainActivity : AppCompatActivity() {
         }
         else{
             processHolder.item2 = mergedNumbers.toDouble()
-            println("Saçmalıyor şuan")
-            println("aslında işlem bu sayı ile ${processHolder.item1} ile ${processHolder.item2} arasında ve işlem de ${processHolder.whichOperation}")
         }
 
 
@@ -97,7 +90,7 @@ class MainActivity : AppCompatActivity() {
         var areTheyAllZero = true
         var pointFound = false
         var pieceOfBeforePoint  = ""
-        for(i in 0..< str.length){
+        for(i in str.indices){
             if(!pointFound){
                 if(str[i] == '.'){
                     pointFound = true
