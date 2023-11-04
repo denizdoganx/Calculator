@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.denizdogan.calculator.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -79,7 +78,6 @@ class MainActivity : AppCompatActivity() {
             processHolder.item2 = mergedNumbers.toDouble()
             println("Saçmalıyor şuan")
             println("aslında işlem bu sayı ile ${processHolder.item1} ile ${processHolder.item2} arasında ve işlem de ${processHolder.whichOperation}")
-            buttonClear.text = "C"
         }
 
 
@@ -89,45 +87,81 @@ class MainActivity : AppCompatActivity() {
 
         if(processHolder.whichOperation != '\u0000'){
             pressedSignButton(processHolder.whichOperation)
-            var result = processHolder.resultForDouble
-            details.text = processHolder.item1.toString() + " " + processHolder.whichOperation + " " + processHolder.item2.toString() + " = " + result
+            var result = processHolder.result
+            details.text =  formatString(processHolder.item1.toString()) + " " + processHolder.whichOperation + " " + formatString(processHolder.item2.toString()) + " = " + result
             bigNumber.text = result.toString()
         }
+    }
 
-        else {
-            println("Once sayı girmelisin")
+    private fun formatString(str : String) : String {
+        var areTheyAllZero = true
+        var pointFound = false
+        var pieceOfBeforePoint  = ""
+        for(i in 0..< str.length){
+            if(!pointFound){
+                if(str[i] == '.'){
+                    pointFound = true
+                    continue
+                }
+                else{
+                    pieceOfBeforePoint += str[i]
+                }
+            }
+
+            if(pointFound && str[i] != '0'){
+                areTheyAllZero = false
+            }
+        }
+
+        if(areTheyAllZero){
+            return pieceOfBeforePoint
+        }
+        else{
+            return str
         }
     }
 
     private fun pressedClearButton(){
 
-        if(buttonClear.text == "C"){
-            mergedNumbers = ""
-            processHolder.item2 = 0.0
-            bigNumber.text = ""
-            buttonClear.text = "AC"
+        mergedNumbers = ""
+        processHolder.item1 = 0.0
+        processHolder.item2 = 0.0
+        processHolder.whichOperation = '\u0000'
+        bigNumber.text = ""
+        details.text = ""
+    }
+
+    private fun pressedPointButton(number: CharSequence){
+        mergedNumbers += number.toString()
+        bigNumber.text = mergedNumbers
+    }
+
+    private fun pressedSignConverterButton(){
+
+        var temp : String = mergedNumbers
+        mergedNumbers = ""
+
+        if(temp.startsWith('-')){
+            mergedNumbers = temp.substring(1);
+        }
+        else{
+            mergedNumbers += "-"
+            mergedNumbers += temp
         }
 
-        else if (buttonClear.text == "AC"){
-            mergedNumbers = ""
-            processHolder.item1 = 0.0
-            processHolder.item2 = 0.0
-            processHolder.whichOperation = '\u0000'
-            bigNumber.text = ""
+        bigNumber.text = mergedNumbers
+    }
+
+    private fun pressedPercentageButton(){
+        var doubleFormatOfMergedNumbers = mergedNumbers.toDoubleOrNull()
+
+        if(doubleFormatOfMergedNumbers != null){
+            doubleFormatOfMergedNumbers /= 100
         }
 
-    }
+        mergedNumbers = doubleFormatOfMergedNumbers.toString()
 
-    fun pressedPointButton(){
-
-    }
-
-    fun pressedSignConverterButton(){
-
-    }
-
-    fun pressedPercentageButton(){
-
+        bigNumber.text = mergedNumbers
     }
 
     private fun clearAllTextViews(){
@@ -155,7 +189,9 @@ class MainActivity : AppCompatActivity() {
 
             buttonEqual -> pressedEqualButton()
             buttonClear -> pressedClearButton()
-
+            buttonPoint -> pressedPointButton(buttonPoint.text)
+            buttonSignConverter -> pressedSignConverterButton()
+            buttonPercentage -> pressedPercentageButton()
         }
     }
 
