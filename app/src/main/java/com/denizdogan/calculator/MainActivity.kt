@@ -63,11 +63,12 @@ class MainActivity : AppCompatActivity() {
     private fun pressedSignButton(sign : Char){
 
         if(processHolder.whichOperation == '\u0000'){
-            processHolder.item1 = mergedNumbers.toDouble()
-            bigNumber.text = ""
-            mergedNumbers = ""
-            processHolder.whichOperation = sign.lowercaseChar()
-
+            if(mergedNumbers != ""){
+                processHolder.item1 = mergedNumbers.toDouble()
+                bigNumber.text = ""
+                mergedNumbers = ""
+                processHolder.whichOperation = sign.lowercaseChar()
+            }
         }
         else{
             processHolder.item2 = mergedNumbers.toDouble()
@@ -83,6 +84,12 @@ class MainActivity : AppCompatActivity() {
             var result = processHolder.result
             details.text =  formatString(processHolder.item1.toString()) + " " + processHolder.whichOperation + " " + formatString(processHolder.item2.toString()) + " = " + result
             bigNumber.text = result.toString()
+
+            mergedNumbers = processHolder.result.toString()
+            processHolder.item1 = 0.0
+            processHolder.item2 = 0.0
+            processHolder.whichOperation = '\u0000'
+
         }
     }
 
